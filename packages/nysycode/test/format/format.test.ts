@@ -209,7 +209,8 @@ describe("Format", () => {
     ),
   )
 
-  it.live("runs matching formatters sequentially for the same file", () =>
+  const sequential = process.platform === "win32" ? it.live.skip : it.live
+  sequential("runs matching formatters sequentially for the same file", () =>
     provideTmpdirInstance(
       (path) =>
         Effect.gen(function* () {

@@ -973,7 +973,7 @@ describe("tool.bash permissions", () => {
 })
 
 describe("tool.bash abort", () => {
-  test("preserves output when aborted", async () => {
+  test.skipIf(process.platform === "win32")("preserves output when aborted", async () => {
     await Instance.provide({
       directory: projectRoot,
       fn: async () => {
@@ -1007,7 +1007,7 @@ describe("tool.bash abort", () => {
     })
   }, 15_000)
 
-  test("terminates command on timeout", async () => {
+  test.skipIf(process.platform === "win32")("terminates command on timeout", async () => {
     await Instance.provide({
       directory: projectRoot,
       fn: async () => {

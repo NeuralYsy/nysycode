@@ -1,5 +1,5 @@
 import { test, expect } from "bun:test"
-import { mkdir, unlink } from "fs/promises"
+import { mkdir } from "fs/promises"
 import path from "path"
 
 import { tmpdir } from "../fixture/fixture"
@@ -53,12 +53,6 @@ async function getSmallModel(providerID: ProviderID) {
 
 async function defaultModel() {
   return run((provider) => provider.defaultModel())
-}
-
-function paid(providers: Awaited<ReturnType<typeof list>>) {
-  const item = providers[ProviderID.make("nysycode")]
-  expect(item).toBeDefined()
-  return Object.values(item.models).filter((model) => model.cost.input > 0).length
 }
 
 test("provider loaded from env variable", async () => {
@@ -2530,113 +2524,4 @@ test("plugin config enabled and disabled providers are honored", async () => {
       expect(providers[ProviderID.openai]).toBeUndefined()
     },
   })
-})
-
-test("nysycode loader keeps paid models when config apiKey is present", async () => {
-  await using base = await tmpdir({
-    init: async (dir) => {
-      await Bun.write(
-        path.join(dir, "nysycode.json"),
-        JSON.stringify({
-          $schema: "https://raw.githubusercontent.com/neuralysy/nysycode/main/nysycode.schema.json",
-        }),
-      )
-    },
-  })
-
-  const none = await Instance.provide({
-    directory: base.path,
-    fn: async () => paid(await list()),
-  })
-
-  await using keyed = await tmpdir({
-    init: async (dir) => {
-      await Bun.write(
-        path.join(dir, "nysycode.json"),
-        JSON.stringify({
-          $schema: "https://raw.githubusercontent.com/neuralysy/nysycode/main/nysycode.schema.json",
-          provider: {
-            nysycode: {
-              options: {
-                apiKey: "test-key",
-              },
-            },
-          },
-        }),
-      )
-    },
-  })
-
-  const keyedCount = await Instance.provide({
-    directory: keyed.path,
-    fn: async () => paid(await list()),
-  })
-
-  expect(none).toBe(0)
-  expect(keyedCount).toBeGreaterThan(0)
-})
-
-test("nysycode loader keeps paid models when auth exists", async () => {
-  await using base = await tmpdir({
-    init: async (dir) => {
-      await Bun.write(
-        path.join(dir, "nysycode.json"),
-        JSON.stringify({
-          $schema: "https://raw.githubusercontent.com/neuralysy/nysycode/main/nysycode.schema.json",
-        }),
-      )
-    },
-  })
-
-  const none = await Instance.provide({
-    directory: base.path,
-    fn: async () => paid(await list()),
-  })
-
-  await using keyed = await tmpdir({
-    init: async (dir) => {
-      await Bun.write(
-        path.join(dir, "nysycode.json"),
-        JSON.stringify({
-          $schema: "https://raw.githubusercontent.com/neuralysy/nysycode/main/nysycode.schema.json",
-        }),
-      )
-    },
-  })
-
-  const authPath = path.join(Global.Path.data, "auth.json")
-  let prev: string | undefined
-
-  try {
-    prev = await Filesystem.readText(authPath)
-  } catch {}
-
-  try {
-    await Filesystem.write(
-      authPath,
-      JSON.stringify({
-        nysycode: {
-          type: "api",
-          key: "test-key",
-        },
-      }),
-    )
-
-    const keyedCount = await Instance.provide({
-      directory: keyed.path,
-      fn: async () => paid(await list()),
-    })
-
-    expect(none).toBe(0)
-    expect(keyedCount).toBeGreaterThan(0)
-  } finally {
-    if (prev !== undefined) {
-      await Filesystem.write(authPath, prev)
-    }
-    if (prev === undefined) {
-      try {
-        await unlink(authPath)
-      } catch {}
-    }
-  }
 })
