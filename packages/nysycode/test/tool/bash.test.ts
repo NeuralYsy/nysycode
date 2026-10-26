@@ -33,7 +33,7 @@ const ctx = {
   sessionID: SessionID.make("ses_test"),
   messageID: MessageID.make(""),
   callID: "",
-  agent: "build",
+  agent: "dev",
   abort: AbortSignal.any([]),
   messages: [],
   metadata: () => Effect.void,

@@ -1,15 +1,11 @@
-# js
+# nysycode
 
-To install dependencies:
+O agente de código open source da NeuralYsy, para o terminal.
 
-```bash
-bun install
-```
+Este pacote contém a CLI `nysycode` e o alias `nysy`.
 
-To run:
+- Documentação: [README principal](https://github.com/neuralysy/nysycode#readme)
+- Instalação: `npm i -g nysycode@latest` ou `curl -fsSL https://raw.githubusercontent.com/neuralysy/nysycode/main/install | bash`
+- Licença: MIT (veja `LICENSE` e `NOTICE`)
 
-```bash
-bun run index.ts
-```
-
-This project was created using `bun init` in bun v1.2.12. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
+nysycode é um projeto independente baseado no código do anomalyco/opencode (MIT License). Não é afiliado, patrocinado ou endossado pela equipe do OpenCode. Não afiliado ao NyxCode.

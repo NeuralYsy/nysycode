@@ -101,7 +101,7 @@ describe("session.prompt missing file", () => {
       git: true,
       config: {
         agent: {
-          build: {
+          dev: {
             model: "openai/gpt-5.2",
           },
         },
@@ -120,7 +120,7 @@ describe("session.prompt missing file", () => {
             const missing = path.join(tmp.path, "does-not-exist.ts")
             const msg = yield* prompt.prompt({
               sessionID: session.id,
-              agent: "build",
+              agent: "dev",
               noReply: true,
               parts: [
                 { type: "text", text: "please review @does-not-exist.ts" },
@@ -151,7 +151,7 @@ describe("session.prompt missing file", () => {
       git: true,
       config: {
         agent: {
-          build: {
+          dev: {
             model: "openai/gpt-5.2",
           },
         },
@@ -170,7 +170,7 @@ describe("session.prompt missing file", () => {
             const missing = path.join(tmp.path, "still-missing.ts")
             const msg = yield* prompt.prompt({
               sessionID: session.id,
-              agent: "build",
+              agent: "dev",
               noReply: true,
               parts: [
                 {
@@ -204,46 +204,54 @@ describe("session.prompt missing file", () => {
 
 describe("session.prompt special characters", () => {
   test("handles filenames with # character", async () => {
-    await using tmp = await tmpdir({
-      git: true,
-      init: async (dir) => {
-        await Bun.write(path.join(dir, "file#name.txt"), "special content\n")
-      },
-    })
+    const prev = process.env.OPENAI_API_KEY
+    process.env.OPENAI_API_KEY = "test-openai-key"
 
-    await Instance.provide({
-      directory: tmp.path,
-      fn: () =>
-        run(
-          Effect.gen(function* () {
-            const prompt = yield* SessionPrompt.Service
-            const sessions = yield* Session.Service
-            const session = yield* sessions.create({})
-            const template = "Read @file#name.txt"
-            const parts = yield* prompt.resolvePromptParts(template)
-            const fileParts = parts.filter((part) => part.type === "file")
+    try {
+      await using tmp = await tmpdir({
+        git: true,
+        init: async (dir) => {
+          await Bun.write(path.join(dir, "file#name.txt"), "special content\n")
+        },
+      })
 
-            expect(fileParts.length).toBe(1)
-            expect(fileParts[0].filename).toBe("file#name.txt")
-            expect(fileParts[0].url).toContain("%23")
+      await Instance.provide({
+        directory: tmp.path,
+        fn: () =>
+          run(
+            Effect.gen(function* () {
+              const prompt = yield* SessionPrompt.Service
+              const sessions = yield* Session.Service
+              const session = yield* sessions.create({})
+              const template = "Read @file#name.txt"
+              const parts = yield* prompt.resolvePromptParts(template)
+              const fileParts = parts.filter((part) => part.type === "file")
 
-            const decodedPath = fileURLToPath(fileParts[0].url)
-            expect(decodedPath).toBe(path.join(tmp.path, "file#name.txt"))
+              expect(fileParts.length).toBe(1)
+              expect(fileParts[0].filename).toBe("file#name.txt")
+              expect(fileParts[0].url).toContain("%23")
 
-            const message = yield* prompt.prompt({
-              sessionID: session.id,
-              parts,
-              noReply: true,
-            })
-            const stored = MessageV2.get({ sessionID: session.id, messageID: message.info.id })
-            const textParts = stored.parts.filter((part) => part.type === "text")
-            const hasContent = textParts.some((part) => part.text.includes("special content"))
-            expect(hasContent).toBe(true)
+              const decodedPath = fileURLToPath(fileParts[0].url)
+              expect(decodedPath).toBe(path.join(tmp.path, "file#name.txt"))
 
-            yield* sessions.remove(session.id)
-          }),
-        ),
-    })
+              const message = yield* prompt.prompt({
+                sessionID: session.id,
+                parts,
+                noReply: true,
+              })
+              const stored = MessageV2.get({ sessionID: session.id, messageID: message.info.id })
+              const textParts = stored.parts.filter((part) => part.type === "text")
+              const hasContent = textParts.some((part) => part.text.includes("special content"))
+              expect(hasContent).toBe(true)
+
+              yield* sessions.remove(session.id)
+            }),
+          ),
+      })
+    } finally {
+      if (prev === undefined) delete process.env.OPENAI_API_KEY
+      else process.env.OPENAI_API_KEY = prev
+    }
   })
 })
 
@@ -283,7 +291,7 @@ describe("session.prompt regression", () => {
                 },
               },
               agent: {
-                build: {
+                dev: {
                   model: "alibaba/qwen-plus",
                 },
               },
@@ -302,7 +310,7 @@ describe("session.prompt regression", () => {
               const session = yield* sessions.create({ title: "Prompt regression" })
               const result = yield* prompt.prompt({
                 sessionID: session.id,
-                agent: "build",
+                agent: "dev",
                 parts: [{ type: "text", text: "Where is SessionProcessor?" }],
               })
 
@@ -357,7 +365,7 @@ describe("session.prompt regression", () => {
                 },
               },
               agent: {
-                build: {
+                dev: {
                   model: "alibaba/qwen-plus",
                 },
               },
@@ -377,7 +385,7 @@ describe("session.prompt regression", () => {
               const task = Effect.runPromise(
                 prompt.prompt({
                   sessionID: session.id,
-                  agent: "build",
+                  agent: "dev",
                   parts: [{ type: "text", text: "Cancel me" }],
                 }),
               )
@@ -424,7 +432,7 @@ describe("session.prompt agent variant", () => {
         git: true,
         config: {
           agent: {
-            build: {
+            dev: {
               model: "openai/gpt-5.2",
               variant: "xhigh",
             },
@@ -443,7 +451,7 @@ describe("session.prompt agent variant", () => {
 
               const other = yield* prompt.prompt({
                 sessionID: session.id,
-                agent: "build",
+                agent: "dev",
                 model: { providerID: ProviderID.make("nysycode"), modelID: ModelID.make("kimi-k2.5-free") },
                 noReply: true,
                 parts: [{ type: "text", text: "hello" }],
@@ -453,7 +461,7 @@ describe("session.prompt agent variant", () => {
 
               const match = yield* prompt.prompt({
                 sessionID: session.id,
-                agent: "build",
+                agent: "dev",
                 noReply: true,
                 parts: [{ type: "text", text: "hello again" }],
               })
@@ -467,7 +475,7 @@ describe("session.prompt agent variant", () => {
 
               const override = yield* prompt.prompt({
                 sessionID: session.id,
-                agent: "build",
+                agent: "dev",
                 noReply: true,
                 variant: "high",
                 parts: [{ type: "text", text: "hello third" }],
@@ -546,7 +554,7 @@ describe("session.agent-resolution", () => {
             )
             expect(NamedError.Unknown.isInstance(err)).toBe(true)
             if (NamedError.Unknown.isInstance(err)) {
-              expect(err.data.message).toContain("build")
+              expect(err.data.message).toContain("dev")
             }
           }),
         ),

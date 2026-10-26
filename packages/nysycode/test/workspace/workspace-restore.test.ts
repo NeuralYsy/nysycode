@@ -56,7 +56,7 @@ async function user(sessionID: SessionID, text: string) {
     id: MessageID.ascending(),
     role: "user",
     sessionID,
-    agent: "build",
+    agent: "dev",
     model: { providerID: ProviderID.make("test"), modelID: ModelID.make("test") },
     time: { created: Date.now() },
   })

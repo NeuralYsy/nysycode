@@ -20,7 +20,7 @@ test("agent color parsed from project config", async () => {
         JSON.stringify({
           $schema: "https://raw.githubusercontent.com/neuralysy/nysycode/main/nysycode.schema.json",
           agent: {
-            build: { color: "#FFA500" },
+            dev: { color: "#FFA500" },
             plan: { color: "primary" },
           },
         }),
@@ -31,7 +31,7 @@ test("agent color parsed from project config", async () => {
     directory: tmp.path,
     fn: async () => {
       const cfg = await load()
-      expect(cfg.agent?.["build"]?.color).toBe("#FFA500")
+      expect(cfg.agent?.["dev"]?.color).toBe("#FFA500")
       expect(cfg.agent?.["plan"]?.color).toBe("primary")
     },
   })
@@ -46,7 +46,7 @@ test("Agent.get includes color from config", async () => {
           $schema: "https://raw.githubusercontent.com/neuralysy/nysycode/main/nysycode.schema.json",
           agent: {
             plan: { color: "#A855F7" },
-            build: { color: "accent" },
+            dev: { color: "accent" },
           },
         }),
       )
@@ -57,7 +57,7 @@ test("Agent.get includes color from config", async () => {
     fn: async () => {
       const plan = await agent(tmp.path, (svc) => svc.get("plan"))
       expect(plan?.color).toBe("#A855F7")
-      const build = await agent(tmp.path, (svc) => svc.get("build"))
+      const build = await agent(tmp.path, (svc) => svc.get("dev"))
       expect(build?.color).toBe("accent")
     },
   })

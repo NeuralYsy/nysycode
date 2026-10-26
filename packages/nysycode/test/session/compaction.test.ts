@@ -104,7 +104,7 @@ async function user(sessionID: SessionID, text: string) {
     id: MessageID.ascending(),
     role: "user",
     sessionID,
-    agent: "build",
+    agent: "dev",
     model: ref,
     time: { created: Date.now() },
   })
@@ -123,8 +123,8 @@ async function assistant(sessionID: SessionID, parentID: MessageID, root: string
     id: MessageID.ascending(),
     role: "assistant",
     sessionID,
-    mode: "build",
-    agent: "build",
+    mode: "dev",
+    agent: "dev",
     path: { cwd: root, root },
     cost: 0,
     tokens: {
@@ -474,7 +474,7 @@ describe("session.compaction.create", () => {
 
         yield* compact.create({
           sessionID: info.id,
-          agent: "build",
+          agent: "dev",
           model: ref,
           auto: true,
           overflow: true,
@@ -506,7 +506,7 @@ describe("session.compaction.prune", () => {
           id: MessageID.ascending(),
           role: "user",
           sessionID: info.id,
-          agent: "build",
+          agent: "dev",
           model: ref,
           time: { created: Date.now() },
         })
@@ -521,8 +521,8 @@ describe("session.compaction.prune", () => {
           id: MessageID.ascending(),
           role: "assistant",
           sessionID: info.id,
-          mode: "build",
-          agent: "build",
+          mode: "dev",
+          agent: "dev",
           path: { cwd: dir, root: dir },
           cost: 0,
           tokens: {
@@ -559,7 +559,7 @@ describe("session.compaction.prune", () => {
             id: MessageID.ascending(),
             role: "user",
             sessionID: info.id,
-            agent: "build",
+            agent: "dev",
             model: ref,
             time: { created: Date.now() },
           })
@@ -596,7 +596,7 @@ describe("session.compaction.prune", () => {
           id: MessageID.ascending(),
           role: "user",
           sessionID: info.id,
-          agent: "build",
+          agent: "dev",
           model: ref,
           time: { created: Date.now() },
         })
@@ -611,8 +611,8 @@ describe("session.compaction.prune", () => {
           id: MessageID.ascending(),
           role: "assistant",
           sessionID: info.id,
-          mode: "build",
-          agent: "build",
+          mode: "dev",
+          agent: "dev",
           path: { cwd: dir, root: dir },
           cost: 0,
           tokens: {
@@ -649,7 +649,7 @@ describe("session.compaction.prune", () => {
             id: MessageID.ascending(),
             role: "user",
             sessionID: info.id,
-            agent: "build",
+            agent: "dev",
             model: ref,
             time: { created: Date.now() },
           })

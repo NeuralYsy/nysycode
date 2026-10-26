@@ -16,7 +16,7 @@ const baseCtx: Omit<Tool.Context, "ask"> = {
   sessionID: SessionID.make("ses_test"),
   messageID: MessageID.make(""),
   callID: "",
-  agent: "build",
+  agent: "dev",
   abort: AbortSignal.any([]),
   messages: [],
   metadata: () => Effect.void,
@@ -61,7 +61,7 @@ Use this skill.
           )
 
           const registry = yield* ToolRegistry.Service
-          const agent = { name: "build", mode: "primary" as const, permission: [], options: {} }
+          const agent = { name: "dev", mode: "primary" as const, permission: [], options: {} }
           const tool = (yield* registry.tools({
             providerID: "nysycode" as any,
             modelID: "gpt-5" as any,

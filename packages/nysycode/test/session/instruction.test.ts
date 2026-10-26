@@ -23,7 +23,7 @@ function loaded(filepath: string): MessageV2.WithParts[] {
         sessionID,
         role: "user",
         time: { created: 0 },
-        agent: "build",
+        agent: "dev",
         model: {
           providerID: ProviderID.make("anthropic"),
           modelID: ModelID.make("claude-sonnet-4-20250514"),

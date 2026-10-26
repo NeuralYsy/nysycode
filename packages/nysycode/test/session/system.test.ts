@@ -42,7 +42,7 @@ description: ${description}
       await Instance.provide({
         directory: tmp.path,
         fn: async () => {
-          const build = await load(tmp.path, (svc) => svc.get("build"))
+          const build = await load(tmp.path, (svc) => svc.get("dev"))
           const runSkills = Effect.gen(function* () {
             const svc = yield* SystemPrompt.Service
             return yield* svc.skills(build!)

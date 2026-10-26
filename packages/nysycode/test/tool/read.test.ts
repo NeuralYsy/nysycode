@@ -26,7 +26,7 @@ const ctx = {
   sessionID: SessionID.make("ses_test"),
   messageID: MessageID.make(""),
   callID: "",
-  agent: "build",
+  agent: "dev",
   abort: AbortSignal.any([]),
   messages: [],
   metadata: () => Effect.void,
@@ -212,7 +212,7 @@ describe("tool.read env file permissions", () => {
     ["environment.ts", false],
   ]
 
-  for (const agentName of ["build", "plan"] as const) {
+  for (const agentName of ["dev", "plan"] as const) {
     describe(`agent=${agentName}`, () => {
       for (const [filename, shouldAsk] of cases) {
         it.live(`${filename} asks=${shouldAsk}`, () =>
