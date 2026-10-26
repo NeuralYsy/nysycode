@@ -1,6 +1,5 @@
 {
   "$schema": "https://raw.githubusercontent.com/neuralysy/nysycode/main/nysycode.schema.json",
-  "provider": {},
   "permission": {
     "edit": {
       "packages/nysycode/migration/*": "deny",

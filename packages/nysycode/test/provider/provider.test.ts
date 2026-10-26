@@ -2525,3 +2525,28 @@ test("plugin config enabled and disabled providers are honored", async () => {
     },
   })
 })
+
+test("defaultModel ignores an empty provider config", async () => {
+  await using tmp = await tmpdir({
+    init: async (dir) => {
+      await Bun.write(
+        path.join(dir, "nysycode.json"),
+        JSON.stringify({
+          $schema: "https://raw.githubusercontent.com/neuralysy/nysycode/main/nysycode.schema.json",
+          provider: {},
+        }),
+      )
+    },
+  })
+
+  await Instance.provide({
+    directory: tmp.path,
+    init: async () => {
+      set("OPENAI_API_KEY", "test-openai-key")
+    },
+    fn: async () => {
+      const model = await defaultModel()
+      expect(model.providerID).toBe(ProviderID.openai)
+    },
+  })
+})
