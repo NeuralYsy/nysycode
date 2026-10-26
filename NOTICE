@@ -1,0 +1,17 @@
+nysycode
+Copyright (c) 2026 NeuralYsy
+
+This product is an independent project based on the source code of
+anomalyco/opencode, which is licensed under the MIT License and is
+Copyright (c) 2025 opencode.
+
+The original project can be found at:
+https://github.com/anomalyco/opencode
+
+Portions of this repository remain under the original MIT copyright notice,
+reproduced in the LICENSE file. The nysycode project is not affiliated with,
+sponsored by, or endorsed by the OpenCode team. It is also not affiliated with
+NyxCode.
+
+Third-party dependencies keep their own licenses; see each package's metadata
+and license files under node_modules after installing dependencies.

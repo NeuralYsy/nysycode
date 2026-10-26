@@ -1,0 +1,61 @@
+{
+  "$schema": "./nysycode.schema.json",
+  "model": "anthropic/claude-sonnet-4-20250514",
+  "small_model": "anthropic/claude-haiku-4-5",
+  "autoupdate": true,
+  "share": "disabled",
+  "instructions": ["CONTRIBUTING.md"],
+  "agent": {
+    "dev": {
+      "description": "Agente padrão com acesso total ao projeto",
+      "model": "anthropic/claude-sonnet-4-20250514",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow"
+      }
+    },
+    "plan": {
+      "description": "Agente somente leitura para análise e planejamento",
+      "model": "anthropic/claude-sonnet-4-20250514",
+      "permission": {
+        "edit": "deny",
+        "bash": "ask"
+      }
+    }
+  },
+  "provider": {
+    "anthropic": {
+      "options": {
+        "apiKey": "{env:ANTHROPIC_API_KEY}"
+      }
+    },
+    "openai": {
+      "options": {
+        "apiKey": "{env:OPENAI_API_KEY}"
+      }
+    },
+    "ollama": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Ollama (local)",
+      "options": {
+        "baseURL": "http://localhost:11434/v1"
+      },
+      "models": {
+        "qwen2.5-coder:32b": {
+          "name": "Qwen 2.5 Coder 32B",
+          "limit": {
+            "context": 32768,
+            "output": 8192
+          }
+        }
+      }
+    }
+  },
+  "mcp": {
+    "example": {
+      "type": "local",
+      "command": ["npx", "-y", "@modelcontextprotocol/server-everything"],
+      "enabled": false
+    }
+  }
+}

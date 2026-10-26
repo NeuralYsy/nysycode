@@ -1,0 +1,117 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/neuralysy/nysycode/main/nysycode.theme.schema.json",
+  "title": "nysycode theme",
+  "description": "A theme definition for the nysycode terminal user interface",
+  "type": "object",
+  "required": ["theme"],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "JSON Schema reference"
+    },
+    "defs": {
+      "type": "object",
+      "description": "Named color definitions that can be referenced by name from the theme object",
+      "additionalProperties": {
+        "$ref": "#/definitions/color"
+      }
+    },
+    "theme": {
+      "type": "object",
+      "description": "Color assignments for the nysycode interface",
+      "additionalProperties": false,
+      "properties": {
+        "primary": { "$ref": "#/definitions/color" },
+        "secondary": { "$ref": "#/definitions/color" },
+        "accent": { "$ref": "#/definitions/color" },
+        "error": { "$ref": "#/definitions/color" },
+        "warning": { "$ref": "#/definitions/color" },
+        "success": { "$ref": "#/definitions/color" },
+        "info": { "$ref": "#/definitions/color" },
+        "text": { "$ref": "#/definitions/color" },
+        "textMuted": { "$ref": "#/definitions/color" },
+        "selectedListItemText": { "$ref": "#/definitions/color" },
+        "background": { "$ref": "#/definitions/color" },
+        "backgroundPanel": { "$ref": "#/definitions/color" },
+        "backgroundElement": { "$ref": "#/definitions/color" },
+        "backgroundMenu": { "$ref": "#/definitions/color" },
+        "border": { "$ref": "#/definitions/color" },
+        "borderActive": { "$ref": "#/definitions/color" },
+        "borderSubtle": { "$ref": "#/definitions/color" },
+        "diffAdded": { "$ref": "#/definitions/color" },
+        "diffRemoved": { "$ref": "#/definitions/color" },
+        "diffContext": { "$ref": "#/definitions/color" },
+        "diffHunkHeader": { "$ref": "#/definitions/color" },
+        "diffHighlightAdded": { "$ref": "#/definitions/color" },
+        "diffHighlightRemoved": { "$ref": "#/definitions/color" },
+        "diffAddedBg": { "$ref": "#/definitions/color" },
+        "diffRemovedBg": { "$ref": "#/definitions/color" },
+        "diffContextBg": { "$ref": "#/definitions/color" },
+        "diffLineNumber": { "$ref": "#/definitions/color" },
+        "diffAddedLineNumberBg": { "$ref": "#/definitions/color" },
+        "diffRemovedLineNumberBg": { "$ref": "#/definitions/color" },
+        "markdownText": { "$ref": "#/definitions/color" },
+        "markdownHeading": { "$ref": "#/definitions/color" },
+        "markdownLink": { "$ref": "#/definitions/color" },
+        "markdownLinkText": { "$ref": "#/definitions/color" },
+        "markdownCode": { "$ref": "#/definitions/color" },
+        "markdownBlockQuote": { "$ref": "#/definitions/color" },
+        "markdownEmph": { "$ref": "#/definitions/color" },
+        "markdownStrong": { "$ref": "#/definitions/color" },
+        "markdownHorizontalRule": { "$ref": "#/definitions/color" },
+        "markdownListItem": { "$ref": "#/definitions/color" },
+        "markdownListEnumeration": { "$ref": "#/definitions/color" },
+        "markdownImage": { "$ref": "#/definitions/color" },
+        "markdownImageText": { "$ref": "#/definitions/color" },
+        "markdownCodeBlock": { "$ref": "#/definitions/color" },
+        "syntaxComment": { "$ref": "#/definitions/color" },
+        "syntaxKeyword": { "$ref": "#/definitions/color" },
+        "syntaxFunction": { "$ref": "#/definitions/color" },
+        "syntaxVariable": { "$ref": "#/definitions/color" },
+        "syntaxString": { "$ref": "#/definitions/color" },
+        "syntaxNumber": { "$ref": "#/definitions/color" },
+        "syntaxType": { "$ref": "#/definitions/color" },
+        "syntaxOperator": { "$ref": "#/definitions/color" },
+        "syntaxPunctuation": { "$ref": "#/definitions/color" },
+        "thinkingOpacity": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Opacity applied to thinking blocks"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "color": {
+      "description": "A hex color, a reference to a value in `defs`, or a dark/light pair",
+      "oneOf": [
+        { "$ref": "#/definitions/colorValue" },
+        { "$ref": "#/definitions/colorVariant" }
+      ]
+    },
+    "colorValue": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+        },
+        {
+          "type": "string",
+          "minLength": 1,
+          "description": "Name of a color declared in `defs`"
+        }
+      ]
+    },
+    "colorVariant": {
+      "type": "object",
+      "required": ["dark", "light"],
+      "additionalProperties": false,
+      "properties": {
+        "dark": { "$ref": "#/definitions/colorValue" },
+        "light": { "$ref": "#/definitions/colorValue" }
+      }
+    }
+  }
+}
