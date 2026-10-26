@@ -1638,9 +1638,12 @@ const layer: Layer.Layer<
 
       const configured = cfg.provider ? Object.keys(cfg.provider) : []
       const provider = Object.values(s.providers).find((p) => configured.length === 0 || configured.includes(p.id))
-      if (!provider) throw new Error("no providers found")
+      if (!provider)
+        throw new Error(
+          "No AI provider is configured. Run `nysycode auth login` or set a provider API key (for example OPENAI_API_KEY or ANTHROPIC_API_KEY).",
+        )
       const [model] = sort(Object.values(provider.models))
-      if (!model) throw new Error("no models found")
+      if (!model) throw new Error(`Provider ${provider.id} has no models available. Try another provider.`)
       return {
         providerID: provider.id,
         modelID: model.id,
